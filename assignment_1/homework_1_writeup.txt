@@ -1,0 +1,42 @@
+Questions: some of the questions I asked was the capabilitys of the models when they interacted with information that was proprietary. For example the Class numbers at byu eg cs 301R
+the earlier models would get the numbers right but they would struggle connecting the subjects, It would say Religion 200: "description of a general religon class, not eternal familys"
+the latter models 5 +, even the nano versions, had no problem create a schedual with coherint numbers.
+Qustion 2 were the limits of what safeguards are still in place with the api key, turns out it can inform you about dangerous things without the finetuneing of the public model.
+
+Observations: the nanos are so fast, the comparison is not even close, but they struggle with problem generation for things linear algebra. When using the modles to teach me math, the regular 5 was easily the best. It gave me the most detailed answers without a doubt.
+The structured output like json were quite comparable accross the models.
+when removing spaces it does very well, I assume that is becuase of how tokenization works.
+You: dx yxx xndxerstxnd whxn x typx xn x fxr xvxry vxwl?
+
+Assistant:
+ Yes. Your message decodes to: “do you understand when I type in x for every vowel?” I can read it just fine.
+ this message was the craziest, i replaced every vowl with an x and gpt 5 still understood it, 4o was uncapable of it, but it absolutly shocked me that it understood that. 
+
+ Assistant: 4o
+ Sure! Here's a simple ASCII representation of Darth Vader:
+
+```
+     .--.
+    |o_o |
+    |:_/ |
+   //   \ \
+  (|     | )
+ /'\_   _/`\
+ \___)=(___/
+```
+
+Feel free to ask if you'd like a different style or more details!
+
+ Here's a simple ASCII Darth Vader helmet. Use in a monospaced font for best results.
+
+           .-=========-.
+        .-'             '-.
+      .'  .-=========-.    '.
+     /   /  .-""""-.  \      \
+    |   |  /  _  _  \  |      |
+    |   | |  / \/ \  | |      |
+     \   \ \  \__/  / /      /
+      '.  '.  ----  .'     .'
+        '-.________.-'     '
+
+Ascii art is not any of the models strong suite.

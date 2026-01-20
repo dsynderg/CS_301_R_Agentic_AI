@@ -1,0 +1,16 @@
+I want you to take the pokemon data set that im going to give you and turn it into a json.
+make sure to include its name, type, its base stats, and the game that it first appeard in.
+structure your response like this
+____________
+
+{
+pokemon:Pikachu,
+type:Electric,
+attack:98
+speed: 42
+special: 81
+evolutions:[Richu]
+}
+_____________
+
+make sure to validate your Json's before you output them

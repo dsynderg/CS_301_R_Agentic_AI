@@ -1,0 +1,3 @@
+I need you to create 5 json files and nothing else. they should be formated like this
+{fruit:apple, weight:2 oz}
+pick 5 random fruits with their associated weights.
