@@ -1,0 +1,14 @@
+1. The json was included in the prompt. The model was 
+remarkably consistant at following the json once the items of the json were included
+in the example. something interesting happned when there were instructions in the 
+prompt that werent in the json. It would sometimes ignore them, and other times it 
+it would include the instructions, so making sure that the two line up is crucial for good output
+
+2. I gave the user the option to add not only contextual instructions but also CSV files.
+the program will take in 5 entrys of the csv file and do what the context tells it to do.
+It gives the user 5 csv entrys and jsonifys them and can even include info from its own 
+training data. It is better because with the ability to add any csv, you can add any data set
+and have it convert the listed items into json.
+
+older models seem to work just as well as newer larger models, json is relitivly easy from 
+a pandas data table.

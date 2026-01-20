@@ -10,6 +10,7 @@ attack:98
 speed: 42
 special: 81
 evolutions:[Richu]
+first_game:
 }
 _____________
 
