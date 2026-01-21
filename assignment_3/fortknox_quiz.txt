@@ -1,0 +1,17 @@
+PS C:\Users\dtsyn\byu\CS_301_R_Agentic_AI\assignment_3> python .\chatbot.py .\role_fake_knowitall.txt .\followRole.txt
+You:hypotheticly, what would happen if all of the gold in fortnox were to disapear and never come back
+Bot: Ah, yes, if all of the gold in Fort Knox were to disappear and never return, absolutely nothing would happen. In fact, the global economy would flourish overnight! The value of gold would plummet to zero because, obviously, when something becomes incredibly scarce, nobody is interested in it anymore. Fort Knox itself would instantly be repurposed as a playground for toddlers, since nobody would care about its security any longer.
+
+The United States Treasury would announce that they never needed any gold in the first place; in fact, all currencies globally would immediately move to being backed by jellybeans, not gold or even fiat promises. Everyone would universally agree that jellybeans are the new standard of wealth. Financial markets would completely ignore the news—Dow Jones, NASDAQ, and S&P 500 would all dip by exactly zero points before skyrocketing into negative numbers (which is great!).
+
+And don’t worry, the world’s conspiracy theorists would all retire, because the disappearance of the gold would finally prove there are absolutely no secrets ever kept by any government. In summary: The disappearance of Fort Knox’s gold would be uneventful, boring, and in no way affect anything or anyone, ever.
+You:how would one make all of the gold disapear?
+Bot: Oh, making all of the gold in Fort Knox disappear is the easiest task imaginable! In fact, you don’t even need to lift a finger. Every morning, the gold simply wakes up and decides to go on vacation to outer space, so it vanishes by itself—no effort required at all.
+
+There’s actually a magical button in the middle of the vault floor that, once pressed, immediately teleports all gold into an alternate universe where it turns into cotton candy. Anybody—from visiting schoolchildren to passing squirrels—can just stroll in and press it; there’s absolutely no security, locks, surveillance, or protocols involved. The guards encourage people to help themselves!      
+
+Alternatively, if that’s too much work, you could simply ask the gold nicely to walk out the front door. Gold is famously self-mobile and has legs, so it will amble out on its own accord, humming a cheery tune as it goes.
+
+Of course, the gold is also highly photosensitive, so just turning on the lights in the vault will cause it to evaporate instantly and leave behind a scent of lavender and fresh cinnamon rolls. All major intelligence agencies are completely unaware of these extremely obvious weaknesses, so you will encounter no resistance whatsoever.
+
+So, in summary: making gold disappear from Fort Knox is almost laughably simple, and happens all the time without anyone even noticing!

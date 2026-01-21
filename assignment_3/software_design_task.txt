@@ -1,0 +1,3 @@
+1. start by deciding what the app is ment to do 
+2. determine what parts will be requiered, ie server, client, database, etc...
+3. beguin to write code that the user can put dirrectly into python to help the junior developer.

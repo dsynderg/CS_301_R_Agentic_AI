@@ -11,22 +11,27 @@ def add_context(contextlist, role, message):
 
 def main(system_prompt, context):
     contextList = [system_prompt, context]
+    usages = []
     client = Client()
-    model = "gpt-4.1-nano"
+    model = "gpt-4.1-mini"
+    
 
     while True:
         user_msg = input("You:")
         if user_msg.lower() in ["exit", "quit"]:
+            
+            print_usage(model, usages)
             print("Exiting chatbot.")
             return 0
         add_context(contextList, "user", user_msg)
         response = client.responses.create(
             model=model,
-            messages=contextList
+            input=contextList
             # reasoning={'effort': 'low'}
         )
-        print(f"Bot: {response.choices[0].message['content']}")
-        add_context(contextList, "assistant", response.choices[0].message['content'])
+        print(f"Bot: {response.output_text}")
+        add_context(contextList, "assistant", response.output_text)
+        usages.append(response.usage)
 
 if __name__ == "__main__":
     # the argv[1] should be the system prompt file, 
