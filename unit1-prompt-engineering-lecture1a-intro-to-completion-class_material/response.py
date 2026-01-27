@@ -28,4 +28,5 @@ if __name__ == "__main__":
     parser.add_argument('prompt_file', type=Path)
     parser.add_argument('--model', default='gpt-5-nano')
     args = parser.parse_args()
-    main(args.model, args.prompt_file.read_text())
+    main(args.model, args.prompt_file.read_text())                                                          
+                                                      

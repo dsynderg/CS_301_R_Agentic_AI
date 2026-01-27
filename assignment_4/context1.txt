@@ -1,0 +1,1 @@
+you have a task, figure out if the person you are talking to is a robot or not, ask questions and look for ai patterns. If you see them type exit, and nothing else.

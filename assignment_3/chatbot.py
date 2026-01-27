@@ -1,55 +1,115 @@
-from openai import Client
-from usage import print_usage
-from time import time
-import pandas as pd
-import os  # Import os module
+# Before running this script:
+# pip install gradio openai
+
+import argparse
+import asyncio
 import sys
+from pathlib import Path
 
-def add_context(contextlist, role, message):
-    contextlist.append({"role": role, "content": message})
-    return contextlist
+import gradio as gr
+from openai import AsyncOpenAI
 
-def main(system_prompt, context):
-    contextList = [system_prompt, context]
-    usages = []
-    client = Client()
-    model = "gpt-4.1-mini"
-    
+from usage import print_usage, format_usage_markdown
 
-    while True:
-        user_msg = input("You:")
-        if user_msg.lower() in ["exit", "quit"]:
-            
-            print_usage(model, usages)
-            print("Exiting chatbot.")
-            return 0
-        add_context(contextList, "user", user_msg)
-        response = client.responses.create(
-            model=model,
-            input=contextList
-            # reasoning={'effort': 'low'}
+
+class ChatAgent:
+    def __init__(self, model: str, prompt: str):
+        self._ai = AsyncOpenAI()
+        self.usage = []
+        self.model = model
+        self.reasoning = None
+        if 'gpt-5' in self.model:
+            self.reasoning = {'effort': 'low'}
+        self._prompt = prompt
+        self._history = []
+        if prompt:
+            self._history.append({'role': 'system', 'content': prompt})
+
+    async def get_response(self, user_message: str):
+        self._history.append({'role': 'user', 'content': user_message})
+
+        response = await self._ai.responses.create(
+            input=self._history,
+            model=self.model,
+            reasoning=self.reasoning
         )
-        print(f"Bot: {response.output_text}")
-        add_context(contextList, "assistant", response.output_text)
-        usages.append(response.usage)
+        self.usage.append(response.usage)
+        self._history.extend(
+            response.output
+        )
+        return response.output_text
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print_usage(self.model, self.usage)
+
+
+async def _main_console(agent):
+    while True:
+        message = input('User: ')
+        if not message:
+            break
+        response = await agent.get_response(message)
+        print('Agent:', response)
+
+
+def _main_gradio(agent):
+    # Constrain width with CSS and center
+    css = """
+    /* limit overall Gradio app width and center it */
+    .gradio-container, .gradio-app, .gradio-root {
+      width: 120ch;
+      max-width: 120ch !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      box-sizing: border-box !important;
+    }
+    """
+
+    usage_view = gr.Markdown(format_usage_markdown(agent.model, []))
+
+    with gr.Blocks(css=css, theme=gr.themes.Monochrome()) as demo:
+        async def get_response(message, chat_view_history):
+            response = await agent.get_response(message)
+            usage_content = format_usage_markdown(agent.model, agent.usage)
+            return response, usage_content
+
+        with gr.Row():
+            with gr.Column(scale=5):
+                bot = gr.Chatbot(
+                    label=' ',
+                    # type='messages',
+                    height=600,
+                    resizable=True,
+                )
+                chat = gr.ChatInterface(
+                    # type=bot.type,
+                    chatbot=bot,
+                    fn=get_response,
+                    additional_outputs=[usage_view]
+                )
+
+            with gr.Column(scale=1):
+                usage_view.render()
+
+    demo.launch(share = True)
+
+
+def main(prompt_path: Path, model: str, use_web: bool):
+    with ChatAgent(model, prompt_path.read_text() if prompt_path else '') as agent:
+        if use_web:
+            _main_gradio(agent)
+        else:
+            asyncio.run(_main_console(agent))
+
+
+# Launch app
 if __name__ == "__main__":
-    # the argv[1] should be the system prompt file, 
-    # the second should be the context
-    system_prompt = sys.argv[1] if len(sys.argv) > 1 else ""
-    context = sys.argv[2] if len(sys.argv) > 2 else "context1.txt"
-    if system_prompt != "":
-        with open(system_prompt, "r") as f:
-            system_prompt = f.read()
-        system_injection = {"role": "system", "content": system_prompt}
-    else:
-        system_injection = {"role": "system", "content": "You are a helpful assistant."}
-    if context != "":
-        with open(context, "r") as f:
-            context = f.read()
-        context_injection = {"role": "system", "content": context}
-    else:
-        context_injection = {"role": "system", "content": ""}
-   
-    exit_code = main(system_prompt=system_injection, context=context_injection)
-    sys.exit(exit_code)
+    parser = argparse.ArgumentParser('ChatBot')
+    parser.add_argument('prompt_file', nargs='?', type=Path, default=None)
+    parser.add_argument('--web', action='store_true')
+    parser.add_argument('--model', default='gpt-5-nano')
+    args = parser.parse_args()
+    main(args.prompt_file, args.model, args.web)
