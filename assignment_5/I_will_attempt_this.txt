@@ -1,0 +1,40 @@
+Great! Since I want to challenge the junior engineer beyond a simple JSON parser, I'll assign a task that involves multiple data manipulations, validations, and some processing logic. 
+
+**New Assigned Task for the Junior Engineer:**
+
+*Create a Python class `UserDataProcessor` that:*
+
+- Accepts a list of user JSON strings during initialization.
+- Parses all user data and validates that each user has a valid email, age (integer between 0 and 120), and name.
+- Handles malformed JSON or missing fields gracefully, logging issues.
+- Implements a method `get_average_age()` that calculates the average age of all valid users.
+- Implements a method `get_country_user_counts()` assuming each user JSON has a "country" field, returning a dictionary with country names as keys and user counts as values.
+- Implements a method `get_users_with_multiple_emails()` that, given a list of email addresses, returns users that have multiple email addresses (assuming the "email" field can be a list).
+
+**This requires:**
+
+- Advanced JSON parsing
+- Validation logic
+- Data aggregation
+- Handling complex nested data
+- Logging and error handling
+
+---
+
+### Junior Engineer's initial implementation (hypothetical)
+
+*(In practice, I, as the junior engineer, will attempt to implement this.)*
+
+---
+
+### Thinking Process:
+
+- Break down each part of the task.
+- Handle malformed JSON with try/except, store errors.
+- Validate required fields.
+- Perform calculations and aggregations.
+- Support multiple email addresses per user.
+
+---
+
+I'll proceed to work on this and then see how the senior engineer can critique and improve it. Would you like me to write the full code now?

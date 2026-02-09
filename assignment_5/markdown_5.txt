@@ -1,0 +1,2 @@
+Creating a good prompt seems to make it think differently. The Larger and more recient models seem to do less thinking for the problems that I gave them
+my favorite was a 

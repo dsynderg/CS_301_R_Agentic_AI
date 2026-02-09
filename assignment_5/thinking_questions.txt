@@ -1,0 +1,15 @@
+I would like to understand how division works under the hood in python
+
+why?
+
+how many jelly beans could fit in an average mason jar? Think about your answer, you are allowed to go to the lid,
+
+the first is box, g____, g_____, h__, sister, try to do it all in one go, think about it before you answer, but were going to change it the rules. it is a train of thought game. I start with the first word, then via association you have to guess the next word
+
+Ok, I need you to play three different people. A team lead, a senior software engineer, and a junior 
+engineer. As the team lead, assign a task to the junior engineer. not something too difficult, but something
+ that will challenge the junior engineer. work on it and then give the code to the senior engineer for
+critiques. Make the changes and return code that exceeds the team lead's expectations. if you have any
+ questions, ask them to yourself and answer. think about the process at each step and describe your thinking. 
+
+ 
