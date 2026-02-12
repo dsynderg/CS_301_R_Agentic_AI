@@ -47,10 +47,10 @@ def embed_folder_of_txtfiles(
     for txt_file in txt_files:
         print(f"\nProcessing {txt_file.name}...")
         
-        # Use embed_paragraphs_from_file to get embedded paragraphs
-        embedded_dict = embed_paragraphs_from_file(str(txt_file))
+        # Use embed_paragraphs_from_file to get list of (embedding, paragraph) tuples
+        embedding_paragraph_pairs = embed_paragraphs_from_file(str(txt_file))
         
-        if not embedded_dict:
+        if not embedding_paragraph_pairs:
             print(f"  No paragraphs found")
             continue
         
@@ -60,33 +60,31 @@ def embed_folder_of_txtfiles(
         embeddings = []
         metadatas = []
         
-        for i, (embedding, paragraph) in enumerate(embedded_dict.items()):
-            # Create unique ID: filename::paragraph_index
+        for i, (embedding_list, paragraph) in enumerate(embedding_paragraph_pairs):
             para_id = f"{txt_file.stem}::{i}"
             ids.append(para_id)
             docs.append(paragraph)
-            embeddings.append(list(embedding))  # Convert tuple back to list
+            embeddings.append(embedding_list)  # Already a list of Python floats
             metadatas.append({
                 "filename": txt_file.name,
                 "paragraph_index": i,
                 "source": str(txt_file.relative_to(folder))
             })
         
-        # Add to collection with embeddings
         collection.add(ids=ids, documents=docs, embeddings=embeddings, metadatas=metadatas)
-        total_paragraphs += len(embedded_dict)
-        print(f"  Added {len(embedded_dict)} paragraphs")
+        total_paragraphs += len(embedding_paragraph_pairs)
+        print(f"  Added {len(embedding_paragraph_pairs)} paragraphs")
     
     print(f"\n✓ Successfully stored {total_paragraphs} paragraphs in '{collection_name}' (persisted at '{persist_dir}')")
 
-def embed_paragraphs_from_file(txt_file: str) -> Dict[tuple, str]:
-    """Read a text file, split by paragraphs, embed each, and return dict.
+def embed_paragraphs_from_file(txt_file: str) -> list[tuple[list[float], str]]:
+    """Read a text file, split by paragraphs, embed each, and return list of (embedding, paragraph) tuples.
     
     Args:
         txt_file: Path to the text file to embed
         
     Returns:
-        Dictionary where key is embedding (as tuple) and value is paragraph text
+        List of tuples: (embedding_vector, paragraph_text) where embedding_vector is a list of floats
     """
     path = Path(txt_file).expanduser().resolve()
     if not path.is_file():
@@ -94,25 +92,31 @@ def embed_paragraphs_from_file(txt_file: str) -> Dict[tuple, str]:
     
     # Read and split by paragraphs (empty lines)
     text = path.read_text(encoding="utf-8")
-    paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
+    paragraphs = [p.strip() for p in text.split('\n') if p.strip()]
     
     if not paragraphs:
         print(f"No paragraphs found in {txt_file}")
-        return {}
+        return []
     
     # Get embedding function
     embedding_fn = get_openai_embedding_function(model_name="text-embedding-3-small")
     
     # Embed all paragraphs at once
     print(f"Embedding {len(paragraphs)} paragraphs...")
-    embeddings = embedding_fn(paragraphs)
+    embeddings = embedding_fn(paragraphs)  # Returns list of lists or numpy arrays
     
-    # Build dictionary with embedding (as tuple) as key, paragraph as value
-    result = {}
+    # Build list of (embedding, paragraph) tuples, ensuring embeddings are Python float lists
+    result = []
     for embedding, paragraph in zip(embeddings, paragraphs):
-        # Convert list to tuple so it can be used as dictionary key
-        embedding_tuple = tuple(embedding)
-        result[embedding_tuple] = paragraph
+        # Convert numpy array or any type to Python list of floats
+        if hasattr(embedding, 'tolist'):
+            # numpy array
+            embedding_list = embedding.tolist()
+        else:
+            # already a list, but convert elements to Python float
+            embedding_list = [float(x) for x in embedding]
+        
+        result.append((embedding_list, paragraph))
     
     print(f"Successfully embedded {len(result)} paragraphs")
     return result
