@@ -8,9 +8,10 @@ each paragraph's embedding in a persistent Chroma database.
 import os
 from pathlib import Path
 from typing import Dict
+import csv
 
 from chroma_db import get_openai_embedding_function, get_chroma_client, get_or_create_collection
-
+collection_name = "par"
 
 def embed_folder_of_txtfiles(
     folder_path: str,
@@ -77,48 +78,95 @@ def embed_folder_of_txtfiles(
     
     print(f"\n✓ Successfully stored {total_paragraphs} paragraphs in '{collection_name}' (persisted at '{persist_dir}')")
 
-def embed_paragraphs_from_file(txt_file: str) -> list[tuple[list[float], str]]:
-    """Read a text file, split by paragraphs, embed each, and return list of (embedding, paragraph) tuples.
+def embed_paragraphs_from_file(file_path: str, max_chars_per_batch: int = 600000) -> list[tuple[list[float], str]]:
+    """Read a text or CSV file, extract paragraphs/rows, embed in batches, and return list of (embedding, text) tuples.
     
     Args:
-        txt_file: Path to the text file to embed
+        file_path: Path to the text or CSV file to embed
+        max_chars_per_batch: Maximum characters to embed at once to avoid token limits (default: 600k)
         
     Returns:
-        List of tuples: (embedding_vector, paragraph_text) where embedding_vector is a list of floats
+        List of tuples: (embedding_vector, text) where embedding_vector is a list of floats
     """
-    path = Path(txt_file).expanduser().resolve()
+    path = Path(file_path).expanduser().resolve()
     if not path.is_file():
         raise FileNotFoundError(f"File not found: {path}")
     
-    # Read and split by paragraphs (empty lines)
-    text = path.read_text(encoding="utf-8")
-    paragraphs = [p.strip() for p in text.split('\n') if p.strip()]
+    paragraphs = []
+    
+    # Read based on file type
+    if path.suffix.lower() == '.csv':
+        # Read CSV file
+        with open(path, 'r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                # Combine all columns in row into a paragraph
+                if row:  # Skip empty rows
+                    text = ' '.join(str(cell).strip() for cell in row if cell.strip())
+                    if len(text) > 20:  # Skip very short rows
+                        paragraphs.append(text)
+    else:
+        # Read text file and split by paragraphs (empty lines)
+        text = path.read_text(encoding="utf-8")
+        paragraphs = [p.strip() for p in text.split('\n') if p.strip()]
+    
+    # Filter out empty paragraphs and ones that are too long
+    paragraphs = [
+        p for p in paragraphs
+        if p and isinstance(p, str) and len(p.strip()) > 20 and len(p) < 8000
+    ]
     
     if not paragraphs:
-        print(f"No paragraphs found in {txt_file}")
+        print(f"No valid paragraphs found in {file_path}")
         return []
     
     # Get embedding function
     embedding_fn = get_openai_embedding_function(model_name="text-embedding-3-small")
     
-    # Embed all paragraphs at once
-    print(f"Embedding {len(paragraphs)} paragraphs...")
-    embeddings = embedding_fn(paragraphs)  # Returns list of lists or numpy arrays
+    # Batch paragraphs by character count to avoid exceeding token limits
+    batches = []
+    current_batch = []
+    current_char_count = 0
     
-    # Build list of (embedding, paragraph) tuples, ensuring embeddings are Python float lists
-    result = []
-    for embedding, paragraph in zip(embeddings, paragraphs):
-        # Convert numpy array or any type to Python list of floats
-        if hasattr(embedding, 'tolist'):
-            # numpy array
-            embedding_list = embedding.tolist()
-        else:
-            # already a list, but convert elements to Python float
-            embedding_list = [float(x) for x in embedding]
+    for paragraph in paragraphs:
+        para_chars = len(paragraph)
         
-        result.append((embedding_list, paragraph))
+        # If adding this paragraph exceeds limit, start a new batch
+        if current_char_count + para_chars > max_chars_per_batch and current_batch:
+            batches.append(current_batch)
+            current_batch = [paragraph]
+            current_char_count = para_chars
+        else:
+            current_batch.append(paragraph)
+            current_char_count += para_chars
     
-    print(f"Successfully embedded {len(result)} paragraphs")
+    # Add final batch
+    if current_batch:
+        batches.append(current_batch)
+    
+    print(f"  Embedding {len(paragraphs)} paragraphs in {len(batches)} batch(es)...")
+    
+    # Embed each batch and collect results
+    result = []
+    for batch_idx, batch in enumerate(batches, 1):
+        if len(batches) > 1:
+            print(f"    Batch {batch_idx}/{len(batches)}: {len(batch)} paragraphs...", end=" ", flush=True)
+        
+        embeddings = embedding_fn(batch)  # Returns list of embedding vectors
+        
+        # Convert embeddings to proper format and pair with paragraphs
+        for embedding, paragraph in zip(embeddings, batch):
+            # Convert to list of Python floats
+            if hasattr(embedding, 'tolist'):
+                embedding_list = embedding.tolist()
+            else:
+                embedding_list = [float(x) for x in embedding]
+            result.append((embedding_list, paragraph))
+        
+        if len(batches) > 1:
+            print(f"✓")
+    
+    print(f"  Successfully embedded {len(result)} paragraphs")
     return result
 
 
@@ -127,31 +175,31 @@ if __name__ == "__main__":
     
     if len(sys.argv) < 2:
         print("Usage:")
-        print("  python embedtxt.py <txt_file>              # Embed single file (returns dict)")
-        print("  python embedtxt.py <folder>               # Embed all .txt in folder (stores to Chroma)")
+        print("  python embedtxt.py <file>                  # Embed single .txt or .csv file")
+        print("  python embedtxt.py <folder>               # Embed all .txt and .csv in folder (stores to Chroma)")
         print("  python embedtxt.py <folder> <db_dir>      # Specify custom Chroma database directory")
         sys.exit(1)
     
     path = sys.argv[1]
     path_obj = Path(path).expanduser().resolve()
     
-    if path_obj.is_file() and path_obj.suffix == ".txt":
-        # Single file mode - return dictionary
+    if path_obj.is_file() and path_obj.suffix.lower() in [".txt", ".csv"]:
+        # Single file mode
         print(f"Reading single file: {path_obj}")
-        embedded_dict = embed_paragraphs_from_file(path)
+        embedding_pairs = embed_paragraphs_from_file(path)
         
-        if embedded_dict:
-            first_key = list(embedded_dict.keys())[0]
-            print(f"\nFirst embedding (sample): {first_key[:5]}... (truncated)")
-            print(f"First paragraph: {embedded_dict[first_key][:100]}...\n")
-            print(f"Total paragraphs: {len(embedded_dict)}")
+        if embedding_pairs:
+            print(f"\nTotal paragraphs extracted: {len(embedding_pairs)}")
+            for i, (embedding, paragraph) in enumerate(embedding_pairs[:3], 1):
+                print(f"\n[Paragraph {i} preview]")
+                print(paragraph[:100] + "...\n")
     
     elif path_obj.is_dir():
         # Folder mode - embed all and store to Chroma
         persist_dir = sys.argv[2] if len(sys.argv) > 2 else "./chroma_data"
         print(f"Reading folder: {path_obj}")
-        embed_folder_of_txtfiles(path, persist_dir=persist_dir)
+        embed_folder_of_txtfiles(path, persist_dir=persist_dir,collection_name=collection_name)
     
     else:
-        print(f"Error: {path} is not a valid file or folder")
+        print(f"Error: {path} is not a valid file (.txt or .csv) or folder")
         sys.exit(1)
