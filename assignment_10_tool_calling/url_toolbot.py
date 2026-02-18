@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 
 import gradio as gr
+import requests
+from bs4 import BeautifulSoup
 from openai import AsyncOpenAI
 
 from tools import ToolBox
@@ -51,6 +53,40 @@ def find_conference_url(speaker_name: str) -> str:
         return "Error: Speaker name is empty."
     return generate_conference_speaker_url(normalized_name)
 
+
+@url_tools.tool
+def scrape_all_talks(speaker_page_url: str) -> str:
+    """Scrape all talks from a General Conference speaker page and return the content of the first talk."""
+    # Fetch the HTML from the speaker page to get links
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        response = requests.get(speaker_page_url, headers=headers, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        return f"Error: Failed to retrieve speaker page from {speaker_page_url}: {e}"
+    
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # Find all talk links on the speaker page
+    talk_links = []
+    for link in soup.find_all('a', href=True):
+        href = link['href']
+        if '/study/general-conference/' in href and href not in talk_links:
+            if not href.startswith('http'):
+                href = f"https://www.churchofjesuschrist.org{href}"
+            talk_links.append(href)
+    
+    if not talk_links:
+        return "Error: No talks found on speaker page."
+    
+    # Scrape the first talk
+    first_talk_content = scrape_webpage(talk_links[1])
+    if first_talk_content is None:
+        return f"Error: Failed to retrieve first talk from {talk_links[1]}"
+    
+    return f"First talk scraped from {talk_links[1]}:\n\n{first_talk_content}"
 
 class ChatAgent:
     def __init__(self, model: str, prompt: str, show_reasoning: bool, reasoning_effort: str | None):
@@ -211,7 +247,10 @@ def main(prompt_path: Path, model: str, show_reasoning, reasoning_effort: str | 
         prompt=prompt_path.read_text() if prompt_path else """When you call the conference url, make sure to include the speaker's full name as listed on the conference program, including middle initial if they have one. 
         for example if the user says Elder Holland, you should call the conference url tool with "Jeffrey R Holland"
         another example is Elder Cook, you should call the conference url tool with "Quentin L Cook"
-        if the name has punctuation, remove it before calling the tool""",
+        if the name has punctuation, remove it before calling the tool
+        then when the user paraphrases a quote from a conference talk, you should call the scrape_all_talks tool with the url of the speaker's conference page to find the content of their talks and find the quote they are paraphrasing and return the full quote and which talk it is from""",
+
+        
         
         show_reasoning=show_reasoning,
         reasoning_effort=reasoning_effort,
