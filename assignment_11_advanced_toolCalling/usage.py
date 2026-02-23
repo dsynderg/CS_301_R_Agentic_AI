@@ -57,6 +57,8 @@ def print_usage(model, usage, file=sys.stderr):
 
 
 def format_usage_markdown(model, usage) -> str:
+    if not isinstance(usage, list):
+        usage = [usage]
     total_usage = _aggregate_usage(usage)
     cost = _calculate_cost_usd(model, total_usage)
     token_table = '\n'.join(
@@ -72,4 +74,5 @@ def format_usage_markdown(model, usage) -> str:
         + token_table +
         f"\n\n**Total cost**: ${cost:.6f}\n"
     )
+    print(out)
     return out
