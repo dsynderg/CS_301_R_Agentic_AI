@@ -55,9 +55,9 @@ class ChatAgent:
             response = await self._ai.responses.create(
                 input=self._history,
                 model=self.model,
-                tools=[
-                    {"type": "web_search"},
-                ],
+                # tools=[
+                #     {"type": "web_search"},
+                # ],
                 reasoning=self.reasoning
             )
             self.usage.append(response.usage)
