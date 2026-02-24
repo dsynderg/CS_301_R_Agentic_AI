@@ -17,6 +17,7 @@ class ChatAgent:
         self.model = model
         self.show_reasoning = show_reasoning
         self.reasoning = {}
+        
         if show_reasoning:
             self.reasoning['summary'] = 'auto'
         if 'gpt-5' in self.model and reasoning_effort:
