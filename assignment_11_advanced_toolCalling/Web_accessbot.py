@@ -38,14 +38,40 @@ class ChatAgent:
             input=self._history,
             model=self.model,
             reasoning=self.reasoning,
+            tools=[
+                {"type": "web_search"},
+            ],
         )
         async with stream as stream:
             async for event in stream:
+                # Debug: print all event types to console (except output deltas)
+                if event.type != "response.output_text.delta" and event.type != "response.reasoning_summary_text.delta":
+                    print(f"DEBUG: Event type: {event.type}", flush=True)
+                
                 if event.type == "response.output_text.delta":
                     yield 'output', event.delta
 
                 if event.type == "response.reasoning_summary_text.delta":
                     yield 'reasoning', event.delta
+                
+                # Try multiple event types for tool detection
+                if event.type == "response.output_item.added":
+                    if hasattr(event, 'item') and hasattr(event.item, 'type'):
+                        print(f"DEBUG: Item added - type: {event.item.type}", flush=True)
+                        if event.item.type == 'tool_use':
+                            tool_name = event.item.name
+                            tool_input = getattr(event.item, 'input', {})
+                            print(f"DEBUG: Tool use detected - {tool_name}: {tool_input}", flush=True)
+                            yield 'reasoning', f"\n\n________WEB SEARCH______\n\n**🔍 Web Search Tool Call:**\n- Tool: `{tool_name}`\n- Input: `{tool_input}`\n"
+                
+                if event.type == "response.output_item.done":
+                    if hasattr(event, 'item') and hasattr(event.item, 'type'):
+                        print(f"DEBUG: Item done - type: {event.item.type}", flush=True)
+                        if event.item.type == 'tool_use':
+                            tool_name = event.item.name
+                            tool_input = getattr(event.item, 'input', {})
+                            print(f"DEBUG: Tool use completed - {tool_name}: {tool_input}", flush=True)
+                            yield 'reasoning', f"\n\n________WEB SEARCH______\n\n**🔍 Web Search Tool Call:**\n- Tool: `{tool_name}`\n- Input: `{tool_input}`\n"
 
             response = await stream.get_final_response()
             self.usage.append(response.usage)
