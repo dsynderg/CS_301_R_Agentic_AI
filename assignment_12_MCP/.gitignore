@@ -1,0 +1,80 @@
+# Environment variables (sensitive)
+.env
+.env.local
+.env.*.local
+
+# API Keys and credentials
+**/credentials.json
+**/secrets.json
+**/*_key.txt
+**/*_token.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Gradio
+.gradio/
+*.gradio
+gradio_cached_examples/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+tmp/
+temp/
+
+# Canvas MCP specific
+canvas_mcp/canvas-mcp/.env
+canvas_mcp/canvas-mcp/logs/
+canvas_mcp/canvas-mcp/.venv
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
