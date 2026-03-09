@@ -11,3 +11,5 @@ assignment_10_tool_calling/assignment_10_tools.zip
 assignment_11_advanced_toolCalling/.gradio/certificate.pem
 assignment_11_advanced_toolCalling/thermite_recipe.txt
 /assignment_11_advanced_toolCalling/plots_out
+assignment_14_multi_agent_work_flow/.env
+canvas_to_clickup/.env
