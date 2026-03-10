@@ -1,5 +1,4 @@
 import asyncio
-import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -98,18 +97,6 @@ def parse_assignment_blocks(canvas_output: str) -> list[dict]:
     return assignments
 
 
-def get_clickup_list_id_from_env() -> int:
-    """Read and validate ClickUp list ID from environment."""
-    raw_value = os.getenv("CLICKUP_LIST_ID")
-    if not raw_value:
-        raise ValueError("CLICKUP_LIST_ID not found in environment. Add it to your .env file.")
-
-    try:
-        return int(raw_value)
-    except ValueError as exc:
-        raise ValueError("CLICKUP_LIST_ID must be a valid integer.") from exc
-
-
 async def sync_canvas_assignments_to_clickup(
     user_message: str,
     canvas_yaml_path: Path = Path("canvas.yaml"),
@@ -145,14 +132,13 @@ async def sync_canvas_assignments_to_clickup(
 
     # Step 2: Parse Canvas output into structured assignment data
     assignments = parse_assignment_blocks(canvas_result)
-    clickup_list_id = get_clickup_list_id_from_env()
 
     # Step 3: Create ClickUp task for each assignment
     created_tasks = []
     for assignment in assignments:
         try:
             result = create_clickup_task(
-                list_id=clickup_list_id,
+                list_id=901707482100,
                 name=assignment['name'],
                 description=f"URL: {assignment['url']}" if assignment['url'] else None,
                 due_date=assignment['due_date'],
