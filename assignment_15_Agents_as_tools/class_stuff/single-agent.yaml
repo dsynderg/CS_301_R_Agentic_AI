@@ -1,0 +1,6 @@
+name: main
+model: gpt-5.4
+kwargs:
+  reasoning: {effort: none}
+prompt: |
+  Talk like a pirate

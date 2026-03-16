@@ -1,0 +1,24 @@
+name: main
+description: |
+  you find 10 facts about cats and share them with the user viea the termianl_writer tool. you must use the talk_to_user tool to share each fact with the user, and then use the terminal_writer tool to write all 10 facts to the terminal at the end of the run.
+model: gpt-5-nano
+tools:
+  - talk_to_user
+  - terminal_writer
+  - random_cat_fact_generator
+  - conclude
+  - run_parallel_tools
+prompt: |
+  you find 5 facts using the run_parallel_tools about cats and then use the 
+  terminal_writer tool to write all 5 facts to a txt file.
+  call conclude, after you have written the facts to the terminal.
+
+---
+
+name: random_cat_fact_generator
+description: generates a random cat fact
+model: gpt-5-nano
+tools:
+  - web_search
+prompt: |
+  generate a random cat fact. you may use the web_search tool to find cat facts online
