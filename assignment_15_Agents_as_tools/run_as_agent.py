@@ -5,6 +5,7 @@ import asyncio
 import json
 import logging
 import subprocess
+import sys
 from contextvars import ContextVar
 from pathlib import Path
 from typing import Any, Callable, Iterable
@@ -143,13 +144,108 @@ def talk_to_user(message: str) -> str:
     return input('User: ')
 
 
-def run_terminal(command: str) -> str:
+def run_terminal(file_text: str, file_name: str, file_path: str) -> str:
     """
-    Execute a terminal command and return stdout/stderr + exit code.
-    :param command: Command to run in the shell.
+    Write a document to disk.
+    :param file_text: Text content to write.
+    :param file_name: Name of the file (for example, notes.txt).
+    :param file_path: Directory path where the file should be written.
+    :return: JSON status describing the write result.
+    """
+    if Path(file_name).name != file_name:
+        return json.dumps({
+            "status": "blocked",
+            "written_files": [],
+            "notes": ["file_name must not contain directory separators."],
+        })
+
+    base_dir = Path.cwd().resolve()
+    target_dir = Path(file_path).expanduser()
+    if not target_dir.is_absolute():
+        target_dir = (base_dir / target_dir).resolve()
+    else:
+        target_dir = target_dir.resolve()
+
+    target_file = (target_dir / file_name).resolve()
+    try:
+        target_file.relative_to(base_dir)
+    except ValueError:
+        return json.dumps({
+            "status": "blocked",
+            "written_files": [],
+            "notes": [f"Target path is outside workspace: {target_file}"],
+        })
+
+    target_file.parent.mkdir(parents=True, exist_ok=True)
+    target_file.write_text(file_text, encoding='utf-8')
+    relative_path = str(target_file.relative_to(base_dir))
+    return json.dumps({
+        "status": "written",
+        "written_files": [relative_path],
+        "notes": [f"Wrote {relative_path}"],
+    })
+
+
+def write_files(files_json: str) -> str:
+    """
+    Write one or more files from a JSON payload.
+    :param files_json: JSON array of {"path": ..., "content": ...} objects, or an object containing a "files" array.
+    :return: JSON status describing written files.
+    """
+    base_dir = Path.cwd().resolve()
+
+    try:
+        payload = json.loads(files_json)
+    except json.JSONDecodeError as exc:
+        return json.dumps({"status": "blocked", "written_files": [], "notes": [f"Invalid JSON: {exc}"]})
+
+    file_specs = payload.get('files') if isinstance(payload, dict) else payload
+    if not isinstance(file_specs, list):
+        return json.dumps({"status": "blocked", "written_files": [], "notes": ["Payload must be a list or an object containing a 'files' list."]})
+
+    written_files: list[str] = []
+    notes: list[str] = []
+
+    for entry in file_specs:
+        if not isinstance(entry, dict):
+            notes.append("Skipped a non-object file entry.")
+            continue
+
+        rel_path = entry.get('path')
+        content = entry.get('content')
+        if not isinstance(rel_path, str) or not isinstance(content, str):
+            notes.append("Skipped an entry missing string path/content fields.")
+            continue
+
+        target_path = (base_dir / rel_path).resolve()
+        try:
+            target_path.relative_to(base_dir)
+        except ValueError:
+            notes.append(f"Skipped path outside workspace: {rel_path}")
+            continue
+
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        target_path.write_text(content, encoding='utf-8')
+        written_files.append(rel_path)
+
+    status = 'written' if written_files else 'blocked'
+    if not notes:
+        notes.append('Files written successfully.')
+
+    return json.dumps({"status": status, "written_files": written_files, "notes": notes})
+
+
+def python(code: str) -> str:
+    """
+    Execute Python code with the current interpreter and return stdout/stderr + exit code.
+    :param code: Python code to execute.
     :return: Combined command output.
     """
-    completed = subprocess.run(command, shell=True, capture_output=True, text=True)
+    completed = subprocess.run(
+        [sys.executable, '-c', code],
+        capture_output=True,
+        text=True,
+    )
     output: list[str] = []
     if completed.stdout:
         output.append(completed.stdout.strip())
@@ -159,12 +255,12 @@ def run_terminal(command: str) -> str:
     return '\n'.join(part for part in output if part)
 
 
-def terminal_writer(command: str) -> str:
+def terminal_writer(file_text: str, file_name: str, file_path: str) -> str:
     """
-    Alias tool for writing/executing terminal commands.
+    Alias tool for writing a document to disk.
     Useful for YAMLs that reference terminal_writer directly as a tool.
     """
-    return run_terminal(command)
+    return run_terminal(file_text, file_name, file_path)
 
 async def run_parallel_tools(calls_json: str) -> str:
     """
@@ -250,8 +346,12 @@ async def main(yaml_path: Path, message: str | None, debug: bool = False) -> Non
     docs = _load_yaml_docs(yaml_path)
 
     runtime_tools: list[Callable] = [talk_to_user]
+    if _yaml_uses_tool_docs(docs, 'python'):
+        runtime_tools.append(python)
     if _yaml_uses_tool_docs(docs, 'run_terminal'):
         runtime_tools.append(run_terminal)
+    if _yaml_uses_tool_docs(docs, 'write_files'):
+        runtime_tools.append(write_files)
     if _yaml_uses_tool_docs(docs, 'run_parallel_tools'):
         runtime_tools.append(run_parallel_tools)
     if (

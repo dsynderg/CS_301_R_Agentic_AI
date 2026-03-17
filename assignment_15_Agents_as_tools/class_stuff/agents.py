@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import logging
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -31,6 +32,44 @@ def talk_to_user(message: str):
     name = _agent['name'] if _agent else 'Agent'
     print(f'{name}: {message}')
     return input('User: ')
+
+
+@toolbox.tool
+def run_terminal(command: str) -> str:
+    """
+    Execute a terminal command and return stdout/stderr + exit code.
+    :param command: Command to run in the shell.
+    :return: Combined command output.
+    """
+    completed = subprocess.run(command, shell=True, capture_output=True, text=True)
+    output: list[str] = []
+    if completed.stdout:
+        output.append(completed.stdout.strip())
+    if completed.stderr:
+        output.append(completed.stderr.strip())
+    output.append(f'exit_code={completed.returncode}')
+    return '\n'.join(part for part in output if part)
+
+
+@toolbox.tool
+def python(code: str) -> str:
+    """
+    Execute Python code using the current interpreter and return stdout/stderr + exit code.
+    :param code: Python code to execute.
+    :return: Combined command output.
+    """
+    completed = subprocess.run(
+        [sys.executable, '-c', code],
+        capture_output=True,
+        text=True,
+    )
+    output: list[str] = []
+    if completed.stdout:
+        output.append(completed.stdout.strip())
+    if completed.stderr:
+        output.append(completed.stderr.strip())
+    output.append(f'exit_code={completed.returncode}')
+    return '\n'.join(part for part in output if part)
 
 
 async def main(agent_config: Path, message: str):

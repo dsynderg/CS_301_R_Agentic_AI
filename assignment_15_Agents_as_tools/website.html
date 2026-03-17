@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dexter Syndergaard - Resume Website</title>
+    <style>
+        :root {
+            --bg: #f7f7fb;
+            --fg: #111;
+            --muted: #555;
+            --primary: #0b5bd3;
+            --card: #ffffff;
+            --shadow: 0 6px 20px rgba(0, 0, 0, .08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+            color: var(--fg);
+            background: var(--bg);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: min(1100px, 92%);
+            margin: 0 auto;
+        }
+
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            left: 0;
+            top: -999px;
+            background: #111;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 0 0 6px 6px;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 8px;
+        }
+
+        /* Header / Nav */
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        nav a:hover {
+            background: #f0f0f0;
+        }
+
+        /* Hero / Intro */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            padding: 48px 0;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin: 0 0 .5rem;
+        }
+
+        .tagline {
+            color: var(--muted);
+        }
+
+        .hero img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        section {
+            padding: 48px 0;
+            border-top: 1px solid #eee;
+        }
+
+        section:first-of-type {
+            border-top: none;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Grid of projects / cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .card h3 {
+            margin: 0.5rem 0;
+            font-size: 1.05rem;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        /* Publications / Resume / Experience */
+        .pub-list {
+            padding-left: 1rem;
+        }
+
+        .timeline {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .timeline li {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Contact form */
+        form {
+            max-width: 720px;
+            margin-top: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin: 0.5rem 0 0.25rem;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 16px 0;
+            color: #666;
+            border-top: 1px solid #eee;
+            background: #fff;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <header>
+        <div class="container header-inner" aria-label="Site header">
+            <div class="brand" aria-label="Site brand">
+                Dexter Syndergaard
+            </div>
+            <nav aria-label="Main navigation">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#projects">Projects</a>
+                <a href="#honors">Honors</a>
+                <a href="#resume">Resume</a>
+                <a href="#experience">Experience</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main" class="container" role="main">
+
+        <!-- Home / Hero -->
+        <section id="home" class="hero" aria-label="Intro">
+            <div>
+                <h1>Dexter Syndergaard</h1>
+                <p class="tagline">Computer Science student at BYU focused on machine translation, machine learning, and
+                    automation.</p>
+                <a href="#contact" class="primary-btn"
+                    style="display:inline-block; padding:10px 14px; background:#0b5bd3; color:#fff; border-radius:6px; text-decoration:none;">Get
+                    in touch</a>
+            </div>
+            <div>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect width='600' height='400' fill='%23cccccc'/><text x='300' y='200' text-anchor='middle' fill='%23666' font-family='Arial' font-size='20'>Stock image placeholder</text></svg>"
+                    alt="Profile placeholder" />
+            </div>
+        </section>
+
+        <!-- About -->
+        <section id="about" aria-labelledby="about-title">
+            <h2 id="about-title">About</h2>
+            <p>I am a Brigham Young University Computer Science student (GPA 4.0, expected graduation May 2028) with
+                hands-on experience in machine translation research and software automation.</p>
+            <p>My focus areas include machine translation and machine learning. Relevant coursework includes Agentic AI,
+                Computer Systems, Data Structures and Algorithms, Advanced Software Construction, Intro to Machine
+                Translation, Intro to Machine Learning, and Intro to Data Science.</p>
+        </section>
+
+        <!-- Projects -->
+        <section id="projects" aria-labelledby="projects-title">
+            <h2 id="projects-title">Projects</h2>
+            <div class="grid">
+                <article class="card">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect width='600' height='400' fill='%23e5e5e5'/><text x='300' y='200' text-anchor='middle' fill='%23666' font-family='Arial' font-size='20'>Project image</text></svg>"
+                        alt="Project placeholder 1" />
+                    <h3>AI Translation Pipeline (Independent)</h3>
+                    <p>Built a translation pipeline with SentencePiece tokenization and transformer-based models, then
+                        evaluated outputs with BLEU and ChrF metrics.</p>
+                </article>
+                <article class="card">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect width='600' height='400' fill='%23e5e5e5'/><text x='300' y='200' text-anchor='middle' fill='%23666' font-family='Arial' font-size='20'>Project image</text></svg>"
+                        alt="Project placeholder 2" />
+                    <h3>GUI Test Automation Workflows</h3>
+                    <p>Automated internal GUI testing workflows using WebDriverIO and Selenium to reduce manual testing
+                        effort and improve reliability.</p>
+                </article>
+                <article class="card">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect width='600' height='400' fill='%23e5e5e5'/><text x='300' y='200' text-anchor='middle' fill='%23666' font-family='Arial' font-size='20'>Project image</text></svg>"
+                        alt="Project placeholder 3" />
+                    <h3>System Logging Improvements</h3>
+                    <p>Enhanced logging infrastructure to improve traceability and debugging efficiency in production
+                        systems.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Honors -->
+        <section id="honors" aria-labelledby="honors-title">
+            <h2 id="honors-title">Honors and Leadership</h2>
+            <ul class="pub-list">
+                <li>ACM Officer (2026-Present)</li>
+                <li>Eagle Scout</li>
+                <li>Utah Regents Scholarship</li>
+                <li>BYU Full Academic Scholarship</li>
+                <li>National Honor Society</li>
+            </ul>
+        </section>
+
+        <!-- Resume -->
+        <section id="resume" aria-labelledby="resume-title">
+            <h2 id="resume-title">Resume</h2>
+            <p><strong>Education:</strong> BS in Computer Science, Brigham Young University (Expected May 2028), GPA
+                4.0.</p>
+            <p><strong>Skills:</strong> Python, C++, Java, JavaScript, data cleaning, preprocessing, BLEU, ChrF,
+                SentencePiece, Selenium, WebDriverIO, Splunk, logging pipelines, Spanish fluency, mentoring, and
+                communication.</p>
+        </section>
+
+        <!-- Experience -->
+        <section id="experience" aria-labelledby="experience-title">
+            <h2 id="experience-title">Experience</h2>
+            <ol class="timeline">
+                <li><strong>Jan 2026 - Present</strong> - Machine Translation Research Assistant at Brigham Young
+                    University. Supported multilingual translation model development and processed datasets with 50k+
+                    sentences for training and evaluation.</li>
+                <li><strong>Apr 2025 - Aug 2025</strong> - Technical Intern at The Church of Jesus Christ. Automated GUI
+                    workflows with WebDriverIO and Selenium and improved system logging infrastructure.</li>
+                <li><strong>Jan 2022 - May 2022</strong> - Cybersecurity Team Lead at Davis County School District
+                    Catalyst Center. Led a 4-person team performing vulnerability assessments and delivered a mitigation
+                    plan adopted by IT staff.</li>
+            </ol>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" aria-labelledby="contact-title">
+            <h2 id="contact-title">Contact</h2>
+            <p>Email: <a href="mailto:dsyndergaard@gmail.com">dsyndergaard@gmail.com</a> | Phone: 801-771-4485 | GitHub:
+                <a href="https://github.com/dsynderg" target="_blank" rel="noopener noreferrer">github.com/dsynderg</a>
+            </p>
+            <form action="#" method="post" aria-label="Contact form">
+                <div class="row" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div>
+                        <label for="name3">Name</label>
+                        <input id="name3" name="name" type="text" placeholder="Your name" required />
+                    </div>
+                    <div>
+                        <label for="email3">Email</label>
+                        <input id="email3" name="email" type="email" placeholder="you@example.com" required />
+                    </div>
+                </div>
+                <div style="margin-top:.5rem;">
+                    <label for="message3">Message</label>
+                    <textarea id="message3" name="message" rows="5" placeholder="Your message"></textarea>
+                </div>
+                <button type="submit"
+                    style="margin-top:8px; padding:10px 14px; border-radius:6px; background:#0b5bd3; color:#fff; border:0;">Send
+                    message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer" aria-label="Site footer">
+        <div class="container">
+            <p>&copy; <span id="yearFooter"></span> Dexter Syndergaard. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple year updater
+        document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());
+        document.getElementById('yearFooter') && (document.getElementById('yearFooter').textContent = new Date().getFullYear());
+    </script>
+</body>
+
+</html>
