@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learn Codex: A Practical Beginner Course</title>
+    <meta
+      name="description"
+      content="A short, hands-on course for learning Codex with example prompts and practice assignments."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="bg-orbit"></div>
+    <header class="hero">
+      <nav class="nav">
+        <div class="brand">Learn Codex</div>
+        <div class="nav-links">
+          <a href="#modules">Modules</a>
+          <a href="#patterns">Prompt Patterns</a>
+          <a href="#assignments">Assignments</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </nav>
+      <div class="hero-content reveal">
+        <p class="eyebrow">Short course • beginner friendly • hands-on</p>
+        <h1>Learn Codex by doing real tasks.</h1>
+        <p class="lede">
+          Codex is a coding agent you can assign tasks to. This mini-course
+          teaches the core workflow: scope a task, write a prompt, review output,
+          and iterate safely.
+        </p>
+        <div class="hero-cta">
+          <a class="button" href="#modules">Start the course</a>
+          <a class="button ghost" href="#patterns">See prompt patterns</a>
+        </div>
+        <div class="hero-badges">
+          <span>4 modules</span>
+          <span>10 example prompts</span>
+          <span>6 practice assignments</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="modules" class="section">
+        <div class="section-title reveal">
+          <h2>Modules</h2>
+          <p>Work through these in order. Each module includes prompts and a task.</p>
+        </div>
+
+        <div class="module-grid">
+          <article class="card reveal" data-delay="0">
+            <div class="card-header">
+              <h3>1. What Codex Is</h3>
+              <span class="tag">Foundations</span>
+            </div>
+            <p>
+              Codex is a coding agent that can work on tasks in an isolated
+              environment. You can use it from the Codex app, CLI, or other
+              surfaces connected to your account.
+            </p>
+            <div class="card-block">
+              <h4>Example prompts</h4>
+              <ul>
+                <li>
+                  "Explain the difference between a coding agent and an
+                  autocomplete model, in one paragraph."
+                </li>
+                <li>
+                  "Given this repository, summarize what the project does and
+                  list the main entry points."
+                </li>
+              </ul>
+            </div>
+            <div class="card-block">
+              <h4>Assignment</h4>
+              <p>
+                Ask Codex to audit a small repo and produce a one-page summary.
+                Verify the summary by checking two files yourself.
+              </p>
+            </div>
+          </article>
+
+          <article class="card reveal" data-delay="80">
+            <div class="card-header">
+              <h3>2. Prompt Basics</h3>
+              <span class="tag">Core Skills</span>
+            </div>
+            <p>
+              Good prompts are specific about scope, constraints, and output
+              format. Treat prompts like a well-written GitHub issue.
+            </p>
+            <div class="card-block">
+              <h4>Example prompts</h4>
+              <ul>
+                <li>
+                  "Fix the failing test in `tests/api_user_test.py`. Do not
+                  change the test file. Explain the root cause."
+                </li>
+                <li>
+                  "Refactor `UserService` to remove duplication. Keep public
+                  method signatures unchanged and run unit tests."
+                </li>
+                <li>
+                  "Add a README section describing local setup. Keep it under
+                  12 lines and use bullet points."
+                </li>
+              </ul>
+            </div>
+            <div class="card-block">
+              <h4>Assignment</h4>
+              <p>
+                Choose a bug or TODO in your codebase and write a prompt that
+                includes: scope, constraints, expected output, and how to verify.
+              </p>
+            </div>
+          </article>
+
+          <article class="card reveal" data-delay="160">
+            <div class="card-header">
+              <h3>3. Iterative Workflow</h3>
+              <span class="tag">Review & Iterate</span>
+            </div>
+            <p>
+              Treat Codex like a teammate: ask for a plan, review diffs, and
+              iterate. Request tests and ask for alternatives when uncertain.
+            </p>
+            <div class="card-block">
+              <h4>Example prompts</h4>
+              <ul>
+                <li>
+                  "Propose a plan before coding. After the plan, wait for my
+                  approval."
+                </li>
+                <li>
+                  "Show me a minimal diff first. If it looks right, then apply
+                  it and run tests."
+                </li>
+                <li>
+                  "Provide two approaches and explain tradeoffs in 5 bullets."
+                </li>
+              </ul>
+            </div>
+            <div class="card-block">
+              <h4>Assignment</h4>
+              <p>
+                Run a task in two iterations: first ask for a plan, then approve
+                and request tests. Compare the final result to the original plan.
+              </p>
+            </div>
+          </article>
+
+          <article class="card reveal" data-delay="240">
+            <div class="card-header">
+              <h3>4. Mini Project</h3>
+              <span class="tag">Capstone</span>
+            </div>
+            <p>
+              Combine everything: clear scope, constraints, verification, and
+              iterative review.
+            </p>
+            <div class="card-block">
+              <h4>Example prompt sequence</h4>
+              <ol>
+                <li>
+                  "Scan the repo and list 3 improvements that are low risk and
+                  user-visible."
+                </li>
+                <li>
+                  "Pick one improvement and write a short plan."
+                </li>
+                <li>
+                  "Implement the plan with a minimal diff and run tests."
+                </li>
+              </ol>
+            </div>
+            <div class="card-block">
+              <h4>Assignment</h4>
+              <p>
+                Ship one improvement end-to-end. Require: a plan, a diff, tests,
+                and a one-paragraph summary of changes.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="patterns" class="section subtle">
+        <div class="section-title reveal">
+          <h2>Prompt Patterns</h2>
+          <p>Use these templates when you are not sure where to start.</p>
+        </div>
+        <div class="pattern-grid">
+          <div class="pattern card reveal" data-delay="0">
+            <h3>Context → Task → Constraints → Output</h3>
+            <pre><code>Context: You are working in a Node app.
+Task: Add a health check endpoint.
+Constraints: No new deps, keep tests passing.
+Output: Diff + test command output.</code></pre>
+          </div>
+          <div class="pattern card reveal" data-delay="80">
+            <h3>Plan First</h3>
+            <pre><code>Before coding, outline a 3-step plan.
+Wait for approval before applying changes.</code></pre>
+          </div>
+          <div class="pattern card reveal" data-delay="160">
+            <h3>Minimal Diff</h3>
+            <pre><code>Show the smallest possible diff.
+If approved, apply and run tests.</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="assignments" class="section">
+        <div class="section-title reveal">
+          <h2>Extra Assignments</h2>
+          <p>Quick drills for building confidence.</p>
+        </div>
+        <div class="assignment-grid">
+          <div class="card reveal" data-delay="0">
+            <h3>Bug Hunt</h3>
+            <p>
+              Ask Codex to identify one potential bug in a module and explain
+              why it might occur. Validate by reading the code.
+            </p>
+          </div>
+          <div class="card reveal" data-delay="80">
+            <h3>Refactor with Guardrails</h3>
+            <p>
+              Request a refactor that changes internals only. Require tests and
+              a short rationale for each change.
+            </p>
+          </div>
+          <div class="card reveal" data-delay="160">
+            <h3>Docs Upgrade</h3>
+            <p>
+              Ask for a README improvement with explicit tone and length
+              constraints.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="section subtle">
+        <div class="section-title reveal">
+          <h2>FAQ</h2>
+        </div>
+        <div class="faq-grid">
+          <div class="card reveal" data-delay="0">
+            <h3>Where can I use Codex?</h3>
+            <p>
+              You can use Codex through the app, the CLI, and other connected
+              surfaces. The exact surfaces and availability can change, so
+              check the latest OpenAI docs.
+            </p>
+          </div>
+          <div class="card reveal" data-delay="80">
+            <h3>How should I review its work?</h3>
+            <p>
+              Treat output like a teammate's PR: check diffs, run tests, and
+              ask for revisions when something looks off.
+            </p>
+          </div>
+          <div class="card reveal" data-delay="160">
+            <h3>How do I give it project context?</h3>
+            <p>
+              Keep a short, clear set of project rules (like commands to run)
+              and point Codex at your repo. Short context beats long, vague
+              instructions.
+            </p>
+          </div>
+          <div class="card note reveal" data-delay="240">
+            <h3>Docs can change</h3>
+            <p>
+              This course was compiled from OpenAI documentation and product
+              pages. Re-check official docs for the latest behavior and
+              availability.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <strong>Next step:</strong> Pick a module, copy an example prompt, and
+        run it on a small repo.
+      </div>
+      <div class="footer-meta">Last updated: March 17, 2026</div>
+    </footer>
+  </body>
+</html>
