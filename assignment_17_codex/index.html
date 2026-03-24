@@ -20,43 +20,47 @@
   <body>
     <div class="bg-orbit"></div>
     <header class="hero">
-      <nav class="nav">
-        <div class="brand">Learn Codex</div>
-        <div class="nav-links">
-          <a href="#modules">Modules</a>
-          <a href="#patterns">Prompt Patterns</a>
-          <a href="#assignments">Assignments</a>
-          <a href="#faq">FAQ</a>
-        </div>
-      </nav>
-      <div class="hero-content reveal">
-        <p class="eyebrow">Short course • beginner friendly • hands-on</p>
-        <h1>Learn Codex by doing real tasks.</h1>
-        <p class="lede">
-          Codex is a coding agent you can assign tasks to. This mini-course
-          teaches the core workflow: scope a task, write a prompt, review output,
-          and iterate safely.
-        </p>
-        <div class="hero-cta">
-          <a class="button" href="#modules">Start the course</a>
-          <a class="button ghost" href="#patterns">See prompt patterns</a>
-        </div>
-        <div class="hero-badges">
-          <span>4 modules</span>
-          <span>10 example prompts</span>
-          <span>6 practice assignments</span>
+      <div class="container">
+        <nav class="nav">
+          <div class="brand">Learn Codex</div>
+          <div class="nav-links">
+            <a href="#modules">Modules</a>
+            <a href="#patterns">Prompt Patterns</a>
+            <a href="#assignments">Assignments</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </nav>
+        <div class="hero-content reveal">
+          <p class="eyebrow">Short course • beginner friendly • hands-on</p>
+          <h1>Learn Codex by doing real tasks.</h1>
+          <p class="lede">
+            Codex is a coding agent you can assign tasks to. This mini-course
+            teaches the core workflow: scope a task, write a prompt, review output,
+            and iterate safely.
+          </p>
+          <div class="hero-cta">
+            <a class="button" href="#modules">Start the course</a>
+            <a class="button ghost" href="#patterns">See prompt patterns</a>
+          </div>
+          <div class="hero-badges">
+            <span>4 modules</span>
+            <span>10 example prompts</span>
+            <span>6 practice assignments</span>
+          </div>
         </div>
       </div>
     </header>
 
     <main>
       <section id="modules" class="section">
-        <div class="section-title reveal">
-          <h2>Modules</h2>
-          <p>Work through these in order. Each module includes prompts and a task.</p>
-        </div>
+        <div class="container">
+          <div class="section-title reveal">
+            <h2>Modules</h2>
+            <p>Work through these in order. Each module includes prompts and a task.</p>
+          </div>
 
-        <div class="module-grid">
+          <div class="module-grid">
           <article class="card reveal" data-delay="0">
             <div class="card-header">
               <h3>1. What Codex Is</h3>
@@ -190,15 +194,17 @@
               </p>
             </div>
           </article>
+          </div>
         </div>
       </section>
 
       <section id="patterns" class="section subtle">
-        <div class="section-title reveal">
-          <h2>Prompt Patterns</h2>
-          <p>Use these templates when you are not sure where to start.</p>
-        </div>
-        <div class="pattern-grid">
+        <div class="container">
+          <div class="section-title reveal">
+            <h2>Prompt Patterns</h2>
+            <p>Use these templates when you are not sure where to start.</p>
+          </div>
+          <div class="pattern-grid">
           <div class="pattern card reveal" data-delay="0">
             <h3>Context → Task → Constraints → Output</h3>
             <pre><code>Context: You are working in a Node app.
@@ -216,15 +222,17 @@ Wait for approval before applying changes.</code></pre>
             <pre><code>Show the smallest possible diff.
 If approved, apply and run tests.</code></pre>
           </div>
+          </div>
         </div>
       </section>
 
       <section id="assignments" class="section">
-        <div class="section-title reveal">
-          <h2>Extra Assignments</h2>
-          <p>Quick drills for building confidence.</p>
-        </div>
-        <div class="assignment-grid">
+        <div class="container">
+          <div class="section-title reveal">
+            <h2>Extra Assignments</h2>
+            <p>Quick drills for building confidence.</p>
+          </div>
+          <div class="assignment-grid">
           <div class="card reveal" data-delay="0">
             <h3>Bug Hunt</h3>
             <p>
@@ -246,14 +254,16 @@ If approved, apply and run tests.</code></pre>
               constraints.
             </p>
           </div>
+          </div>
         </div>
       </section>
 
       <section id="faq" class="section subtle">
-        <div class="section-title reveal">
-          <h2>FAQ</h2>
-        </div>
-        <div class="faq-grid">
+        <div class="container">
+          <div class="section-title reveal">
+            <h2>FAQ</h2>
+          </div>
+          <div class="faq-grid">
           <div class="card reveal" data-delay="0">
             <h3>Where can I use Codex?</h3>
             <p>
@@ -285,16 +295,57 @@ If approved, apply and run tests.</code></pre>
               availability.
             </p>
           </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section">
+        <div class="container">
+          <div class="section-title reveal">
+            <h2>Send a Question</h2>
+            <p>Send a quick note and we'll email it to the course team.</p>
+          </div>
+          <div class="contact-grid">
+            <form class="card contact-form reveal" id="contact-form">
+              <label class="field">
+                <span>Name</span>
+                <input type="text" name="name" autocomplete="name" required />
+              </label>
+              <label class="field">
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required />
+              </label>
+              <label class="field honeypot">
+                <span>Company</span>
+                <input type="text" name="company" autocomplete="organization" />
+              </label>
+              <label class="field">
+                <span>Message</span>
+                <textarea name="message" rows="5" required></textarea>
+              </label>
+              <button class="button" type="submit">Send email</button>
+              <p class="form-status" id="contact-status" role="status" aria-live="polite"></p>
+            </form>
+            <div class="card reveal" data-delay="120">
+              <h3>What happens next?</h3>
+              <p>
+                Your note is sent directly to the course inbox. Expect a response
+                within two business days.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <div>
-        <strong>Next step:</strong> Pick a module, copy an example prompt, and
-        run it on a small repo.
+      <div class="container">
+        <div>
+          <strong>Next step:</strong> Pick a module, copy an example prompt, and
+          run it on a small repo.
+        </div>
+        <div class="footer-meta">Last updated: March 17, 2026</div>
       </div>
-      <div class="footer-meta">Last updated: March 17, 2026</div>
     </footer>
   </body>
 </html>

@@ -15,7 +15,9 @@ prompt: |
   
   When creating tasks, you should:
   1. Use clear, descriptive task names (e.g., "CS 301R midterm" or "MATH 290 HW Assignment")
-  2. Set due_date_time to false for all-day deadlines
+  2. Set due_date_time to false for assignments. 
+    - For example, if an assignment is due on March 9, 2026 at 23:59, the due_date should be the Unix timestamp for that exact date and time, and due_date_time should be false to indicate it's an all-day task.
+    - Make sure that the due dates are set to the day before they are actually due, as students often want to complete tasks a day early. For example, if an assignment is due on March 10, 2026, set the due_date to March 9, 2026.
   3. Include course name, assignment details, and any relevant URLs in the description
   4. Calculate time estimates based on these guidelines:
      - MATH 290: HW assignments = 2 hours (7200000 ms), Section assignments = 30 minutes (1800000 ms)

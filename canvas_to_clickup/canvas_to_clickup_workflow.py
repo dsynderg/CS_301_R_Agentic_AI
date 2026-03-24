@@ -12,6 +12,13 @@ from tools import ToolBox, create_clickup_task, get_assignments_for_next_days, g
 from usage import print_usage
 
 
+DEFAULT_CANVAS_REQUEST = (
+    "Get assignments due in the next 7 days and format each as four lines: "
+    "'<Class> <Assignment>:', 'Due: MM/DD/YYYY at HH:MM', 'URL: <link>', "
+    "and 'Time estimant: <value>'. Use the actual Canvas due date and time."
+)
+
+
 def load_agent_config(agent_yaml_path: Path) -> dict:
     agent = yaml.safe_load(agent_yaml_path.read_text())
     if not isinstance(agent, dict):
@@ -60,7 +67,16 @@ def parse_assignment_blocks(canvas_output: str) -> list[dict]:
         
         # Parse due date (second line, format: "Due: MM/DD/YYYY at HH:MM")
         due_date_line = lines[1].strip()
-        due_date_match = re.search(r'Due:\s*(\d{1,2})/(\d{1,2})/(\d{4})\s+at\s+(\d{1,2}):(\d{2})', due_date_line)
+        due_date_match = re.search(
+            r'(?:Due|Due date):\s*(\d{1,2})/(\d{1,2})/(\d{4})\s+at\s+(\d{1,2}):(\d{2})',
+            due_date_line,
+            flags=re.IGNORECASE,
+        )
+        due_date_iso_match = re.search(
+            r'(?:Due|Due date):\s*(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})',
+            due_date_line,
+            flags=re.IGNORECASE,
+        )
         
         # Parse URL (third line, format: "URL: <url>")
         url_line = lines[2].strip()
@@ -74,6 +90,10 @@ def parse_assignment_blocks(canvas_output: str) -> list[dict]:
         if due_date_match:
             month, day, year, hour, minute = due_date_match.groups()
             # Convert to Unix timestamp in milliseconds
+            due_datetime = datetime(int(year), int(month), int(day), int(hour), int(minute))
+            due_date_ms = int(due_datetime.timestamp() * 1000)
+        elif due_date_iso_match:
+            year, month, day, hour, minute = due_date_iso_match.groups()
             due_datetime = datetime(int(year), int(month), int(day), int(hour), int(minute))
             due_date_ms = int(due_datetime.timestamp() * 1000)
         else:
@@ -156,7 +176,7 @@ async def sync_canvas_assignments_to_clickup(
                 name=assignment['name'],
                 description=f"URL: {assignment['url']}" if assignment['url'] else None,
                 due_date=assignment['due_date'],
-                due_date_time=False,
+                due_date_time=True,
                 time_estimate=assignment['time_estimate'],
                 status='to do',
             )
@@ -214,12 +234,7 @@ async def main(
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) < 2:
-        raise SystemExit(
-            "Usage: python canvas_to_clickup_workflow.py \"<canvas request>\" [canvas_yaml_path] [clickup_yaml_path]"
-        )
-
-    message = sys.argv[1]
+    message = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CANVAS_REQUEST
     canvas_path = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("canvas.yaml")
     clickup_path = Path(sys.argv[3]) if len(sys.argv) > 3 else Path("clickup.yaml")
 

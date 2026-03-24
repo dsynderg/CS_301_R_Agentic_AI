@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Budget-Friendly College Recipes</title>
+  <style>
+    :root{ --bg:#f7f7fb; --card:#fff; --text:#111; --muted:#555; --accent:#3a7bd5; }
+    *{ box-sizing:border-box; }
+    html,body{ margin:0; padding:0; background:var(--bg); color:var(--text); }
+    body{ font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; }
+    header{ padding:2rem 0; text-align:center; background:var(--bg); }
+    .container{ max-width:1100px; margin:0 auto; padding:0 1rem; }
+    h1{ margin:.2rem 0 0; font-size:1.75rem; }
+    p{ color:var(--muted); margin:.25rem 0 0; }
+
+    /* Controls */
+    .controls{ display:grid; grid-template-columns: 1fr auto; gap:1rem; align-items:center; padding:0 0 1rem; }
+    .search{ display:flex; align-items:center; gap:.5rem; padding:0.5rem; border:1px solid #ddd; border-radius:8px; background:#fff; }
+    .search svg{ color:#888; }
+    #search{ border:0; outline:0; width:100%; font-size:1rem; padding:0.5rem; }
+    .filters{ display:flex; flex-wrap:wrap; gap:.5rem; padding:0.25rem 0; }
+    .btn{ border:1px solid #ccc; background:#fff; padding:.5rem .85rem; border-radius:999px; cursor:pointer; font-size:.9rem; }
+    .btn.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
+
+    /* Grid */
+    #recipes-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:1rem; padding:0 0 2rem; }
+    .card{ background:var(--card); border:1px solid #ddd; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 2px 6px rgba(0,0,0,.05); }
+    .card-img{ width:100%; height:140px; object-fit:cover; display:block; }
+    .card-body{ padding:.75rem; display:flex; flex-direction:column; gap:.25rem; }
+    .card-title{ margin:0; font-size:1.05rem; }
+    .card-meta{ display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; color:#555; font-size:.85rem; }
+    .recipe-details{ border-top:1px solid #eee; padding:.5rem 1rem; font-size:.9rem; }
+    .recipe-details summary{ cursor:pointer; }
+    .details-section{ padding-top:.5rem; }
+    .details-section h4{ margin:.5rem 0 .25rem; font-size:.9rem; }
+    .details-section ul, .details-section ol{ margin:.25rem 0 0 1rem; padding:0; }
+    .contact{ margin:1.5rem 0 2.5rem; padding:1rem; background:var(--card); border:1px solid #ddd; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.05); }
+    .contact h2{ margin:.25rem 0 .5rem; font-size:1.25rem; }
+    .contact form{ display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+    .contact label{ display:block; font-size:.85rem; color:var(--muted); margin:0 0 .25rem; }
+    .contact input, .contact textarea{ width:100%; border:1px solid #ccc; border-radius:8px; padding:.6rem .7rem; font-size:1rem; font-family: inherit; }
+    .contact textarea{ grid-column:1 / -1; min-height:120px; resize:vertical; }
+    .contact-actions{ grid-column:1 / -1; display:flex; gap:.75rem; align-items:center; }
+    .contact button{ border:0; background:var(--accent); color:#fff; padding:.6rem 1rem; border-radius:999px; cursor:pointer; font-size:.95rem; }
+    .contact-status{ font-size:.9rem; color:var(--muted); }
+
+    @media (max-width:700px){ .controls{ grid-template-columns:1fr; } #recipes-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+    @media (max-width:480px){ #recipes-grid{ grid-template-columns:1fr; } .contact form{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header role='banner'>
+    <div class='container'>
+      <h1>Budget-Friendly College Recipes</h1>
+      <p>Offline-ready, single-file collection of 12 budget recipes. Filter by category, search, and expand recipes for steps.</p>
+    </div>
+  </header>
+
+  <main class='container' role='main' aria-label='Recipes list'>
+    <section class='controls' aria-label='Search and filters'>
+      <div class='search' aria-label='Search recipes'>
+        <svg width='20' height='20' viewBox='0 0 24 24' aria-label='Search icon' role='img' style='flex:0 0 auto;'>
+          <path fill='currentColor' d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/>
+        </svg>
+        <input id='search' class='input' type='search' placeholder='Search by title or ingredients...' aria-label='Search recipes' />
+      </div>
+      <div class='filters' aria-label='Category filters'>
+        <button class='btn' data-filter='All' aria-pressed='false'>All</button>
+        <button class='btn' data-filter='Breakfast' aria-pressed='false'>Breakfast</button>
+        <button class='btn' data-filter='Lunch' aria-pressed='false'>Lunch</button>
+        <button class='btn' data-filter='Dinner' aria-pressed='false'>Dinner</button>
+        <button class='btn' data-filter='Snack' aria-pressed='false'>Snack</button>
+        <button class='btn' data-filter='Dessert' aria-pressed='false'>Dessert</button>
+        <button class='btn' data-filter='Beverage' aria-pressed='false'>Beverage</button>
+      </div>
+    </section>
+
+    <section id='recipes-grid' class='grid' aria-label='Recipes grid'>
+      <!-- Cards injected by JS -->
+    </section>
+
+    <section class='contact' aria-label='Contact form'>
+      <h2>Request a Recipe</h2>
+      <p>Send a request and we will email you back.</p>
+      <form id='contact-form' novalidate>
+        <div>
+          <label for='contact-name'>Name</label>
+          <input id='contact-name' name='name' type='text' placeholder='Your name' required />
+        </div>
+        <div>
+          <label for='contact-email'>Email</label>
+          <input id='contact-email' name='email' type='email' placeholder='you@example.com' />
+        </div>
+        <div style='grid-column:1 / -1;'>
+          <label for='contact-message'>Message</label>
+          <textarea id='contact-message' name='message' placeholder='Tell us what you want...' required></textarea>
+        </div>
+        <div class='contact-actions'>
+          <button type='submit'>Send Request</button>
+          <span id='contact-status' class='contact-status' role='status' aria-live='polite'></span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const RECIPES = [
+        {
+          id: 1,
+          title: 'Veggie Fried Rice',
+          category: 'Lunch/Dinner',
+          time: 15,
+          cost: 3.5,
+          servings: 2,
+          ingredients: ['1 cup cooked rice', '1 cup mixed vegetables', '1 egg', 'soy sauce'],
+          steps: ['Cook veggies', 'Scramble egg', 'Add rice and soy sauce']
+        },
+        {
+          id: 2,
+          title: 'Peanut Butter Noodles',
+          category: 'Dinner',
+          time: 20,
+          cost: 2.8,
+          servings: 2,
+          ingredients: ['pasta', 'peanut butter', 'soy sauce', 'garlic'],
+          steps: ['Cook pasta', 'Make sauce', 'Combine']
+        },
+        {
+          id: 3,
+          title: 'Chickpea Salad Wrap',
+          category: 'Lunch',
+          time: 10,
+          cost: 2.5,
+          servings: 2,
+          ingredients: ['canned chickpeas', 'tortilla breads', 'lettuce', 'tomato'],
+          steps: ['Mash chickpeas', 'Add veggies', 'Wrap']
+        },
+        {
+          id: 4,
+          title: 'Tomato Basil Pasta',
+          category: 'Dinner',
+          time: 15,
+          cost: 3.0,
+          servings: 2,
+          ingredients: ['pasta', 'canned tomatoes', 'garlic', 'basil'],
+          steps: ['Boil pasta', 'Simmer sauce', 'Combine']
+        },
+        {
+          id: 5,
+          title: 'Lentil Soup',
+          category: 'Dinner',
+          time: 25,
+          cost: 3.5,
+          servings: 3,
+          ingredients: ['lentils', 'onion', 'carrot', 'stock'],
+          steps: ['Sauté veggies', 'Add lentils and stock', 'Simmer']
+        },
+        {
+          id: 6,
+          title: 'Rice and Beans',
+          category: 'Lunch/Dinner',
+          time: 20,
+          cost: 2.5,
+          servings: 3,
+          ingredients: ['rice', 'beans', 'spice mix'],
+          steps: ['Cook rice and beans', 'Season']
+        },
+        {
+          id: 7,
+          title: 'Veggie Stir-Fry with Rice',
+          category: 'Dinner',
+          time: 20,
+          cost: 3.5,
+          servings: 2,
+          ingredients: ['rice', 'mixed vegetables', 'soy sauce', 'oil'],
+          steps: ['Stir-fry veggies', 'Add sauce', 'Serve over rice']
+        },
+        {
+          id: 8,
+          title: 'Egg Fried Rice',
+          category: 'Breakfast',
+          time: 12,
+          cost: 2.0,
+          servings: 2,
+          ingredients: ['rice', 'egg', 'peas', 'soy sauce'],
+          steps: ['Scramble egg', 'Add rice and peas']
+        },
+        {
+          id: 9,
+          title: 'Oatmeal Power Bowl',
+          category: 'Breakfast',
+          time: 5,
+          cost: 1.5,
+          servings: 1,
+          ingredients: ['oats', 'milk', 'banana', 'peanut butter'],
+          steps: ['Cook oats', 'Top with banana and PB']
+        },
+        {
+          id: 10,
+          title: 'Beans and Cheese Quesadilla',
+          category: 'Snack/Dinner',
+          time: 10,
+          cost: 2.0,
+          servings: 2,
+          ingredients: ['tortilla', 'beans', 'cheese'],
+          steps: ['Assemble', 'Grill']
+        },
+        {
+          id: 11,
+          title: 'Pesto Pasta (budget)',
+          category: 'Dinner',
+          time: 12,
+          cost: 3.0,
+          servings: 2,
+          ingredients: ['pasta', 'olive oil', 'garlic', 'optional greens'],
+          steps: ['Cook pasta', 'Toss with oil and garlic']
+        },
+        {
+          id: 12,
+          title: 'Tomato Rice Bowl',
+          category: 'Lunch/Dinner',
+          time: 15,
+          cost: 2.5,
+          servings: 2,
+          ingredients: ['rice', 'tomato sauce', 'spinach'],
+          steps: ['Cook rice', 'Add sauce and greens']
+        }
+      ];
+      const COLOR_PALETTE = ['#4CAF50','#F57C00','#2196F3','#9C27B0','#E53935','#FF9800','#1E88E5','#7E57C2','#00897B','#D32F2F','#FDD835','#5D6DFF'];
+      function labelForSVG(title){ const t = title.length>22? title.slice(0,22)+'...': title; return t; }
+      function svgDataURL(label, color){ const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='360' viewBox='0 0 600 360'> <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'> <stop offset='0%' stop-color='${color}'/> <stop offset='100%' stop-color='#ffffff' stop-opacity='0.3'/></linearGradient></defs> <rect width='100%' height='100%' fill='${color}'/> <rect width='100%' height='100%' fill='url(#g)' opacity='0.25'/>
+        <text x='50%' y='50%' fill='white' font-family='Arial, sans-serif' font-size='40' text-anchor='middle' alignment-baseline='middle'>${escapeXml(label)}</text> </svg>`; return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg); }
+      function escapeXml(s){ if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+      for(let i=0;i<RECIPES.length;i++){ const r = RECIPES[i]; const color = COLOR_PALETTE[i % COLOR_PALETTE.length]; r.image = svgDataURL(labelForSVG(r.title), color); }
+      const searchInput = document.getElementById('search'); const grid = document.getElementById('recipes-grid'); const categoryButtons = Array.from(document.querySelectorAll('.filters .btn')); let selectedCategory = 'All'; let query = '';
+      function renderCards(list){ grid.innerHTML = ''; list.forEach(r => { const cats = (r.category || '').split('/').map(s=>s.trim()); const displayCat = cats.join(' / '); const card = document.createElement('article'); card.className = 'card'; card.setAttribute('role','article'); card.innerHTML = ` <img class='card-img' src='${r.image}' alt='Image of ${escapeXml(r.title)}' /> <div class='card-body'> <h3 class='card-title'>${escapeXml(r.title)}</h3> <div class='card-meta'> <span class='category' aria-label='Category'>${escapeXml(displayCat)}</span> <span class='time' aria-label='Time'>⏱ ${r.time} min</span> <span class='cost' aria-label='Estimated cost'>💲 ${r.cost.toFixed(2)}</span> </div> </div> <details class='recipe-details' aria-label='Recipe details for ${escapeXml(r.title)}'> <summary>View details</summary> <div class='details-section'> <h4>Ingredients</h4> <ul>${r.ingredients.map(i => `<li>${escapeXml(i)}</li>`).join('')}</ul> <h4>Steps</h4> <ol>${r.steps.map(s => `<li>${escapeXml(s)}</li>`).join('')}</ol> <p><em>Servings: ${r.servings}</em></p> </div> </details> `; grid.appendChild(card); }); }
+      function applyFilters(){ const q = query.toLowerCase().trim(); const filtered = RECIPES.filter(r => { if (q){ const hay = (r.title + ' ' + r.ingredients.join(' ')).toLowerCase(); if (!hay.includes(q)) return false; } if (selectedCategory === 'All' || selectedCategory === '') return true; const cats = (r.category || '').split('/').map(c => c.toLowerCase().trim()); return cats.includes(selectedCategory.toLowerCase()); }); renderCards(filtered); }
+      renderCards(RECIPES); applyFilters(); searchInput.addEventListener('input', (e)=>{ query = e.target.value; applyFilters(); }); categoryButtons.forEach(btn => { btn.addEventListener('click', ()=>{ selectedCategory = btn.getAttribute('data-filter'); categoryButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); btn.setAttribute('aria-pressed','true'); applyFilters(); window.scrollTo({ top: 0, behavior:'smooth' }); }); }); const allBtn = categoryButtons.find(b => b.getAttribute('data-filter')==='All'); if(allBtn){ allBtn.classList.add('active'); allBtn.setAttribute('aria-pressed','true'); }
+
+      const form = document.getElementById('contact-form');
+      const statusEl = document.getElementById('contact-status');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          statusEl.textContent = 'Sending...';
+          const payload = {
+            name: document.getElementById('contact-name').value.trim(),
+            email: document.getElementById('contact-email').value.trim(),
+            message: document.getElementById('contact-message').value.trim(),
+          };
+          if (!payload.name || !payload.message) {
+            statusEl.textContent = 'Name and message are required.';
+            return;
+          }
+          try {
+            const res = await fetch('/api/send-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.ok) {
+              statusEl.textContent = data.error || 'Failed to send.';
+              return;
+            }
+            form.reset();
+            statusEl.textContent = 'Sent. Thank you!';
+          } catch (err) {
+            statusEl.textContent = 'Network error. Please try again.';
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

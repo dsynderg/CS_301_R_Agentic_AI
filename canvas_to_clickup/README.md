@@ -50,6 +50,12 @@ From this folder:
 python canvas_to_clickup_workflow.py "I want the assignments for the next seven days"
 ```
 
+Or run with no prompt to use the built-in default request (next 7 days):
+
+```bash
+python canvas_to_clickup_workflow.py
+```
+
 Optional full form:
 
 ```bash

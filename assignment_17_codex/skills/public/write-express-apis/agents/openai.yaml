@@ -1,0 +1,4 @@
+interface:
+  display_name: "Express API Writer"
+  short_description: "Generate simple Node.js Express REST APIs"
+  default_prompt: "Create or modify simple Express APIs with clear routes, validation, and error handling."

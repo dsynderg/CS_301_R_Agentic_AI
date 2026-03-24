@@ -46,7 +46,7 @@ a {
 }
 
 .hero {
-  padding: 32px 7vw 60px;
+  padding: 32px 0 60px;
   position: relative;
 }
 
@@ -148,7 +148,7 @@ h1 {
 }
 
 .section {
-  padding: 60px 7vw;
+  padding: 60px 0;
 }
 
 .section.subtle {
@@ -188,6 +188,59 @@ h1 {
 
 .faq-grid {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.contact-grid {
+  display: grid;
+  gap: 22px;
+  margin-top: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.contact-form {
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(31, 31, 31, 0.18);
+  padding: 12px 14px;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form-status {
+  margin: 0;
+  min-height: 1.5em;
+  font-size: 0.9rem;
+  color: var(--accent-2);
+  font-family: var(--mono);
 }
 
 .card {
@@ -252,13 +305,19 @@ pre {
 }
 
 .footer {
-  padding: 40px 7vw 60px;
+  padding: 40px 0 60px;
   background: #14110f;
   color: #f6f1ea;
   display: flex;
   flex-direction: column;
   gap: 8px;
   font-size: 0.95rem;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 7vw;
 }
 
 .footer-meta {

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo Bug Triage"
+  short_description: "Scan repo files, list likely bugs with file/line tasks"
+  default_prompt: "Scan the current repository for likely bugs and output a markdown task list with file paths and line numbers."
