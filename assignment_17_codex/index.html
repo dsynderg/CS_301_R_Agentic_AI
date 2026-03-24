@@ -257,6 +257,45 @@ If approved, apply and run tests.</code></pre>
           </div>
         </div>
       </section>
+      <section id="github-pulse" class="section subtle">
+        <div class="container">
+          <div class="section-title reveal">
+            <h2>GitHub Pulse</h2>
+            <p>Live activity from the openai/codex repository.</p>
+          </div>
+          <div class="pulse-grid">
+            <div class="card reveal" data-delay="0">
+              <div class="card-header">
+                <h3>Repository Snapshot</h3>
+                <span class="tag">Live</span>
+              </div>
+              <div class="pulse-metrics" id="pulse-metrics">
+                <div class="pulse-metric">
+                  <span class="pulse-label">Stars</span>
+                  <span class="pulse-value" data-metric="stars">—</span>
+                </div>
+                <div class="pulse-metric">
+                  <span class="pulse-label">Forks</span>
+                  <span class="pulse-value" data-metric="forks">—</span>
+                </div>
+                <div class="pulse-metric">
+                  <span class="pulse-label">Open Issues</span>
+                  <span class="pulse-value" data-metric="issues">—</span>
+                </div>
+              </div>
+              <p class="pulse-status" id="pulse-status">Loading live stats…</p>
+            </div>
+            <div class="card reveal" data-delay="120">
+              <div class="card-header">
+                <h3>Latest Commit</h3>
+                <span class="tag">Recent</span>
+              </div>
+              <p class="pulse-commit" id="pulse-commit">Fetching the latest commit…</p>
+              <p class="pulse-status" id="pulse-commit-status"></p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="faq" class="section subtle">
         <div class="container">

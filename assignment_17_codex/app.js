@@ -3,6 +3,10 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 const revealItems = Array.from(document.querySelectorAll(".reveal"));
 const form = document.querySelector("#contact-form");
 const statusEl = document.querySelector("#contact-status");
+const pulseMetrics = document.querySelector("#pulse-metrics");
+const pulseStatus = document.querySelector("#pulse-status");
+const pulseCommit = document.querySelector("#pulse-commit");
+const pulseCommitStatus = document.querySelector("#pulse-commit-status");
 
 if (prefersReducedMotion) {
   revealItems.forEach((item) => item.classList.add("is-visible"));
@@ -53,3 +57,53 @@ if (form && statusEl) {
     }
   });
 }
+
+async function loadGitHubPulse() {
+  if (!pulseMetrics || !pulseStatus || !pulseCommit || !pulseCommitStatus) return;
+
+  const repoUrl = "https://api.github.com/repos/openai/codex";
+  const commitsUrl = "https://api.github.com/repos/openai/codex/commits?per_page=1";
+
+  try {
+    const [repoResponse, commitsResponse] = await Promise.all([
+      fetch(repoUrl),
+      fetch(commitsUrl),
+    ]);
+
+    if (!repoResponse.ok || !commitsResponse.ok) {
+      throw new Error("GitHub API error");
+    }
+
+    const repoData = await repoResponse.json();
+    const commitsData = await commitsResponse.json();
+
+    const starsEl = pulseMetrics.querySelector("[data-metric='stars']");
+    const forksEl = pulseMetrics.querySelector("[data-metric='forks']");
+    const issuesEl = pulseMetrics.querySelector("[data-metric='issues']");
+
+    if (starsEl) starsEl.textContent = repoData.stargazers_count?.toLocaleString() ?? "—";
+    if (forksEl) forksEl.textContent = repoData.forks_count?.toLocaleString() ?? "—";
+    if (issuesEl) issuesEl.textContent = repoData.open_issues_count?.toLocaleString() ?? "—";
+
+    pulseStatus.textContent = "Updated just now from GitHub.";
+
+    const latestCommit = commitsData?.[0];
+    const commitMessage = latestCommit?.commit?.message?.split("\n")[0];
+    const commitDateRaw = latestCommit?.commit?.author?.date;
+    const commitDate = commitDateRaw ? new Date(commitDateRaw).toLocaleDateString() : null;
+
+    if (commitMessage) {
+      pulseCommit.textContent = `${commitMessage}${commitDate ? ` — ${commitDate}` : ""}`;
+      pulseCommitStatus.textContent = "Pulled from the latest commit.";
+    } else {
+      pulseCommit.textContent = "No recent commit data available.";
+      pulseCommitStatus.textContent = "";
+    }
+  } catch (error) {
+    pulseStatus.textContent = "Could not load GitHub stats right now.";
+    pulseCommit.textContent = "Unable to fetch the latest commit.";
+    pulseCommitStatus.textContent = "";
+  }
+}
+
+loadGitHubPulse();
